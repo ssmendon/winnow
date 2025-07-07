@@ -4,7 +4,7 @@ use crate::{
     combinator::{opt, trace},
     error::{ErrMode, ParserError},
     stream::{Stream, StreamIsPartial},
-    PResult, Parser,
+    Result, Parser,
 };
 
 use super::{empty, fail};
@@ -145,7 +145,7 @@ where
     E: ParserError<I>,
 {
     #[inline(always)]
-    fn parse_next(&mut self, input: &mut I) -> PResult<O, E> {
+    fn parse_next(&mut self, input: &mut I) -> Result<O, E> {
         trace("expression", move |i: &mut I| {
             expression_impl(
                 i,
@@ -167,7 +167,7 @@ fn expression_impl<I, O, Pop, Pre, Post, Pix, E>(
     postfix: &mut Post,
     infix: &mut Pix,
     min_power: i64,
-) -> PResult<O, E>
+) -> Result<O, E>
 where
     I: Stream + StreamIsPartial,
     Pop: Parser<I, O, E>,
@@ -185,7 +185,7 @@ where
         let Prefix(power, fold_prefix) = trace("prefix", prefix.by_ref()).parse_next(i)?;
         // infinite loop check: the parser must always consume
         if i.eof_offset() == len {
-            return Err(ErrMode::assert(i, "`prefix` parsers must always consume"));
+            return Err(E::assert(i, "`prefix` parsers must always consume"));
         }
         let operand = expression_impl(i, parse_operand, prefix, postfix, infix, power)?;
         fold_prefix(i, operand)?
@@ -249,7 +249,7 @@ where
     Ok(operand)
 }
 
-pub struct Prefix<I, O, E>(i64, fn(&mut I, O) -> PResult<O, E>);
+pub struct Prefix<I, O, E>(i64, fn(&mut I, O) -> Result<O, E>);
 
 impl<I, O, E> Clone for Prefix<I, O, E> {
     #[inline(always)]
@@ -260,12 +260,12 @@ impl<I, O, E> Clone for Prefix<I, O, E> {
 
 impl<I: Stream, O, E: ParserError<I>> Parser<I, Prefix<I, O, E>, E> for Prefix<I, O, E> {
     #[inline(always)]
-    fn parse_next(&mut self, input: &mut I) -> PResult<Prefix<I, O, E>, E> {
+    fn parse_next(&mut self, input: &mut I) -> Result<Prefix<I, O, E>, E> {
         empty.value(self.clone()).parse_next(input)
     }
 }
 
-pub struct Postfix<I, O, E>(i64, fn(&mut I, O) -> PResult<O, E>);
+pub struct Postfix<I, O, E>(i64, fn(&mut I, O) -> Result<O, E>);
 
 impl<I, O, E> Clone for Postfix<I, O, E> {
     #[inline(always)]
@@ -275,18 +275,18 @@ impl<I, O, E> Clone for Postfix<I, O, E> {
 }
 
 impl<I: Stream, O, E: ParserError<I>> Parser<I, Postfix<I, O, E>, E>
-    for (i64, fn(&mut I, O) -> PResult<O, E>)
+    for (i64, fn(&mut I, O) -> Result<O, E>)
 {
     #[inline(always)]
-    fn parse_next(&mut self, input: &mut I) -> PResult<Postfix<I, O, E>, E> {
+    fn parse_next(&mut self, input: &mut I) -> Result<Postfix<I, O, E>, E> {
         empty.value(Postfix(self.0, self.1)).parse_next(input)
     }
 }
 
 pub enum Infix<I, O, E> {
-    Left(i64, fn(&mut I, O, O) -> PResult<O, E>),
-    Right(i64, fn(&mut I, O, O) -> PResult<O, E>),
-    Neither(i64, fn(&mut I, O, O) -> PResult<O, E>),
+    Left(i64, fn(&mut I, O, O) -> Result<O, E>),
+    Right(i64, fn(&mut I, O, O) -> Result<O, E>),
+    Neither(i64, fn(&mut I, O, O) -> Result<O, E>),
 }
 
 impl<I, O, E> Clone for Infix<I, O, E> {
@@ -302,7 +302,7 @@ impl<I, O, E> Clone for Infix<I, O, E> {
 
 impl<I: Stream, O, E: ParserError<I>> Parser<I, Infix<I, O, E>, E> for Infix<I, O, E> {
     #[inline(always)]
-    fn parse_next(&mut self, input: &mut I) -> PResult<Infix<I, O, E>, E> {
+    fn parse_next(&mut self, input: &mut I) -> Result<Infix<I, O, E>, E> {
         empty.value(self.clone()).parse_next(input)
     }
 }
