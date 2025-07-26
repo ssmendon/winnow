@@ -299,12 +299,10 @@ impl<I, O, E> Clone for Postfix<I, O, E> {
     }
 }
 
-impl<I: Stream, O, E: ParserError<I>> Parser<I, Postfix<I, O, E>, E>
-    for (i64, fn(&mut I, O) -> Result<O, E>)
-{
+impl<I: Stream, O, E: ParserError<I>> Parser<I, Postfix<I, O, E>, E> for Postfix<I, O, E> {
     #[inline(always)]
     fn parse_next(&mut self, input: &mut I) -> Result<Postfix<I, O, E>, E> {
-        empty.value(Postfix(self.0, self.1)).parse_next(input)
+        empty.value(self.clone()).parse_next(input)
     }
 }
 
