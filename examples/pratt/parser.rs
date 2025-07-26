@@ -83,7 +83,7 @@ pub(crate) fn pratt_parser(i: &mut &str) -> ModalResult<Expr> {
                     multispace0,
                 )
             )
-            .current_precedence_level(precedence)
+            .precedence_level(precedence)
             .prefix(
                 delimited(
                     multispace0,
