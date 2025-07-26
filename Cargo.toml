@@ -206,13 +206,13 @@ name = "string"
 required-features = ["alloc"]
 
 [[example]]
-name = "pratt"
+name = "c_expression"
 required-features = ["std"]
 
 
 [[bench]]
-name = "pratt"
-path = "examples/pratt/bench.rs"
+name = "c_expression"
+path = "examples/c_expression/bench.rs"
 harness = false
 required-features = ["std"]
 
