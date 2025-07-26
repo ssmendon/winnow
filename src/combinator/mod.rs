@@ -162,10 +162,10 @@
 mod branch;
 mod core;
 mod debug;
+mod expression;
 mod multi;
 mod sequence;
 
-pub mod expression;
 
 #[cfg(test)]
 mod tests;
@@ -175,8 +175,10 @@ pub mod impls;
 pub use self::branch::*;
 pub use self::core::*;
 pub use self::debug::*;
+pub use self::expression::*;
 pub use self::multi::*;
 pub use self::sequence::*;
+
 
 #[allow(unused_imports)]
 use crate::Parser;

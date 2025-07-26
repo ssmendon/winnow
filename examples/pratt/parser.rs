@@ -1,8 +1,7 @@
-use winnow::combinator::expression::{expression, Infix, Postfix, Prefix};
-use winnow::combinator::{cut_err, empty, expression, fail, not, opt, peek, separated_pair, trace};
+use winnow::combinator::{expression, Infix, Postfix, Prefix};
+use winnow::combinator::{cut_err, empty, fail, not, opt, peek, separated_pair, trace};
 use winnow::error::{ContextError, ErrMode};
 use winnow::prelude::*;
-use winnow::stream::AsChar as _;
 use winnow::token::{any, take, take_while};
 use winnow::{
     ascii::{digit1, multispace0},
