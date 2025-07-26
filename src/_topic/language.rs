@@ -316,16 +316,16 @@
 //! ```
 //!
 //! See also [`float`]
-//! 
+//!
 //! ## C-style Expressions
-//! 
+//!
 //! An example using the [`expression()`] parser to
 //! build an abstract syntax tree for C-style expressions.
-//! 
+//!
 //! The operator precedence level is based on the [C language][c-precedence].
-//! 
+//!
 //! [c-precedence]: https://en.cppreference.com/w/c/language/operator_precedence.html
-//! 
+//!
 //! ```rust
 #![doc = include_str!("../../examples/c_expression/parser.rs")]
 //! ```

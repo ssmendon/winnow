@@ -40,9 +40,9 @@ where
         e: Default::default(),
     }
 }
- 
+
 /// Helper struct for the [`expression()`] combinator.
-/// 
+///
 /// It implements [`Parser`].
 pub struct Expression<I, O, ParseOperand, Pre, Post, Pix, E>
 where
@@ -66,9 +66,8 @@ where
     I: Stream + StreamIsPartial,
     E: ParserError<I>,
 {
-
     /// Sets the prefix operator parser.
-    /// 
+    ///
     /// It is expected to parse some input `I` into a [`Prefix`].
     #[inline(always)]
     pub fn prefix<NewParsePrefix>(
@@ -90,9 +89,8 @@ where
         }
     }
 
-
     /// Sets the postfix operator parser.
-    /// 
+    ///
     /// It is expected to parse some input `I` into a [`Postfix`].
     #[inline(always)]
     pub fn postfix<NewParsePostfix>(
@@ -115,7 +113,7 @@ where
     }
 
     /// Sets the infix operator parser.
-    /// 
+    ///
     /// It is expected to parse some input `I` into an [`Infix`].
     #[inline(always)]
     pub fn infix<NewParseInfix>(
@@ -138,7 +136,7 @@ where
     }
 
     /// Sets the parser's base precedence level.
-    /// 
+    ///
     /// This is used when parsing a recursive expression,
     /// where disambiguous parsing depends on the parent
     /// operator's binding power.
@@ -267,9 +265,9 @@ where
 }
 
 /// A helper struct for the [`expression()`] combinator.
-/// 
+///
 /// It specifies a binding power for a prefix operator.
-/// 
+///
 /// It implements [`Parser`].
 pub struct Prefix<I, O, E>(pub i64, pub fn(&mut I, O) -> Result<O, E>);
 
@@ -288,9 +286,9 @@ impl<I: Stream, O, E: ParserError<I>> Parser<I, Prefix<I, O, E>, E> for Prefix<I
 }
 
 /// A helper struct for the [`expression()`] combinator.
-/// 
+///
 /// It specifies a binding power for a postfix operator.
-/// 
+///
 /// It implements [`Parser`].
 pub struct Postfix<I, O, E>(pub i64, pub fn(&mut I, O) -> Result<O, E>);
 
@@ -311,11 +309,11 @@ impl<I: Stream, O, E: ParserError<I>> Parser<I, Postfix<I, O, E>, E>
 }
 
 /// A helper struct for the [`expression()`] combinator.
-/// 
+///
 /// Each variant represents the associativity of the
 /// operator. It specieis the binding power of
 /// the operator.
-/// 
+///
 /// It implements [`Parser`].
 pub enum Infix<I, O, E> {
     /// Left-associative

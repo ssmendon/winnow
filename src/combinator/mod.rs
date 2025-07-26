@@ -166,7 +166,6 @@ mod expression;
 mod multi;
 mod sequence;
 
-
 #[cfg(test)]
 mod tests;
 
@@ -178,7 +177,6 @@ pub use self::debug::*;
 pub use self::expression::*;
 pub use self::multi::*;
 pub use self::sequence::*;
-
 
 #[allow(unused_imports)]
 use crate::Parser;
