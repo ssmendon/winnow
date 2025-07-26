@@ -1,3 +1,16 @@
+//! Module `expression` implements a Pratt parser, which is used
+//! in parsing operating precedence expressions.
+//! 
+//! The core of this module is the [`expression()`] function
+//! and the [`Expression`] helper struct. The opaque implementation
+//! of the Pratt parser state machine is in [`expression_impl()`].
+//! 
+//! There are other struct helpers for the different kinds of operators.
+//! Each one is just a tuple containing the [operator's binding power][dawoodjee-pratt],
+//! and a function that applies the operator to its operand.
+//! 
+//! [dawoodjee-pratt]: https://dawoodjee.com/blog/pratt-parsing/#binding-power
+
 use core::marker::PhantomData;
 
 use crate::{
@@ -8,6 +21,17 @@ use crate::{
 };
 
 /// Parses an expression based on operator precedence.
+/// 
+/// It returns an [`Expression`], which can be further configured
+/// and ultimately parsed.
+/// 
+/// The algorithm employed is Pratt parsing. 
+/// 
+/// The [C-style Expressions][c-expr] section in the special topics page
+/// provides a comprehensive usage example.
+/// 
+/// [c-expr][crate::_topics::language#c-style-expressions]
+/// ```
 #[doc(alias = "pratt")]
 #[doc(alias = "separated")]
 #[doc(alias = "shunting_yard")]
@@ -42,7 +66,9 @@ where
 }
 
 /// Helper struct for the [`expression()`] combinator.
-///
+/// 
+/// It contains the configuration of the Pratt parser.
+/// 
 /// It implements [`Parser`].
 pub struct Expression<I, O, ParseOperand, Pre, Post, Pix, E>
 where
@@ -137,9 +163,9 @@ where
 
     /// Sets the parser's base precedence level.
     ///
-    /// This is used when parsing a recursive expression,
-    /// where disambiguous parsing depends on the parent
-    /// operator's binding power.
+    /// This is useful when parsing a recursive expression
+    /// where disambiguating the parse tree depends on the
+    /// parent operator's binding power.
     #[inline(always)]
     pub fn precedence_level(
         mut self,
@@ -266,9 +292,10 @@ where
 
 /// A helper struct for the [`expression()`] combinator.
 ///
-/// It specifies a binding power for a prefix operator.
+/// It specifies a binding power for a prefix operator,
+/// and a folding function to apply the operator.
 ///
-/// It implements [`Parser`].
+/// Its [`Parser`] implementation applies the fold.
 pub struct Prefix<I, O, E>(pub i64, pub fn(&mut I, O) -> Result<O, E>);
 
 impl<I, O, E> Clone for Prefix<I, O, E> {
@@ -287,9 +314,10 @@ impl<I: Stream, O, E: ParserError<I>> Parser<I, Prefix<I, O, E>, E> for Prefix<I
 
 /// A helper struct for the [`expression()`] combinator.
 ///
-/// It specifies a binding power for a postfix operator.
+/// It specifies a binding power for a postfix operator,
+/// and a folding function to apply the operator.
 ///
-/// It implements [`Parser`].
+/// Its [`Parser`] implementation applies the fold.
 pub struct Postfix<I, O, E>(pub i64, pub fn(&mut I, O) -> Result<O, E>);
 
 impl<I, O, E> Clone for Postfix<I, O, E> {
@@ -309,10 +337,13 @@ impl<I: Stream, O, E: ParserError<I>> Parser<I, Postfix<I, O, E>, E> for Postfix
 /// A helper struct for the [`expression()`] combinator.
 ///
 /// Each variant represents the associativity of the
-/// operator. It specieis the binding power of
-/// the operator.
+/// operator. For example, left associative infix operators 
+/// will bind more tightly to their right operator.
+/// 
+/// For each variant, a binding power and folding function
+/// to apply the operator are specified.
 ///
-/// It implements [`Parser`].
+/// Its [`Parser`] implementation applies the fold.
 pub enum Infix<I, O, E> {
     /// Left-associative
     Left(i64, fn(&mut I, O, O) -> Result<O, E>),
