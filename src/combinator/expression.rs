@@ -294,7 +294,7 @@ where
     /// given expression. That's a language-specific detail, and it depends on
     /// what you want to parse.
     #[inline(always)]
-    pub fn precedence_level(
+    pub fn current_precedence_level(
         mut self,
         level: i64,
     ) -> Expression<I, O, ParseOperand, Pre, Post, Pix, E> {
@@ -541,7 +541,7 @@ mod tests {
         move |i: &mut &str| {
             use Infix::*;
             expression(digit1.parse_to::<i32>())
-                .precedence_level(0)
+                .current_precedence_level(0)
                 .prefix(dispatch! {any;
                     '+' => Prefix(12, |_, a| Ok(a)),
                     '-' => Prefix(12, |_, a: i32| Ok(-a)),

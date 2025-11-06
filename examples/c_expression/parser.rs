@@ -195,7 +195,7 @@ pub(crate) fn pratt_parser(i: &mut &str) -> ModalResult<Expr> {
                     multispace0,
                 )
             )
-            .precedence_level(precedence)
+            .current_precedence_level(precedence)
             .prefix(
                 // parsing prefix operators, optionally surrounded by whitespace
                 // for example: `++1`
