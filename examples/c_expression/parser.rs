@@ -173,8 +173,6 @@ pub(crate) enum Expr {
 /// and it returns a [`Parser`] that takes in a string and returns an [`Expr`] on
 /// success.
 pub(crate) fn pratt_parser(i: &mut &str) -> ModalResult<Expr> {
-
-
     fn parser<'i>(precedence: i64) -> impl Parser<&'i str, Expr, ErrMode<ContextError>> {
         move |i: &mut &str| {
             use Infix::{Left, Neither, Right};
