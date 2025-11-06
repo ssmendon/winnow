@@ -1,12 +1,12 @@
 //! Main points of this example:
 //!
-//! 1. [Expr], representing the AST of C-style expressions
-//! 2. [pratt_parser()], the core parser.
-//! 3. The [test]s, which demonstrate the expected input/outputs.
+//! 1. [`Expr`], representing the AST of C-style expressions
+//! 2. [`pratt_parser()`], the core parser.
+//! 3. The [`test`]s, which demonstrate the expected input/outputs.
 //!
 //! # Errata:
-//! - There is a helper parser, [identifier()]
-//! - Two print implementations: [Expr::fmt_ast_with_indent()] and [Expr::fmt_delimited()]
+//! - There is a helper parser, [`identifier()`]
+//! - Two print implementations: [`Expr::fmt_ast_with_indent()`] and [`Expr::fmt_delimited()`]
 //! - For operator precedence, `1` has a low binding power while `13` has a high binding power.
 //!
 //! ## Printing
@@ -52,7 +52,7 @@
 //! Legend:
 //! - Kind: one of Prefix, Postfix, or Infix
 //! - Example: input text example
-//! - Name: the [Expr] variant it corresponds to
+//! - Name: the [`Expr`] variant it corresponds to
 //! - Power: the binding power/precedence of the operator
 //! - Assoc: infix-only, represents the left/right associativity of an operator
 //! - Recursive: only "TRUE" if parsing the operand invokes the parser again
@@ -170,7 +170,7 @@ pub(crate) enum Expr {
 /// We define a helper function `parser()` and call it at the very end.
 ///
 /// `parser()` accepts a minimum `precedence_level` for the entire expression,
-/// and it returns a [Parser] that takes in a string and returns an [Expr] on
+/// and it returns a [`Parser`] that takes in a string and returns an [`Expr`] on
 /// success.
 pub(crate) fn pratt_parser(i: &mut &str) -> ModalResult<Expr> {
 
