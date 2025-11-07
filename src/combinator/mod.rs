@@ -89,8 +89,6 @@
 //! - [`fail`]: Inversion of [`empty`]. Always fails.
 //! - [`Parser::by_ref`]: Allow moving `&mut impl Parser` into other parsers
 //!
-//! - [`expression()`]: Parse an operator precedence expression with Pratt parsing
-//!
 //! ## Text parsing
 //!
 //! - [`any`][crate::token::any]: Matches one token
@@ -116,6 +114,8 @@
 //!
 //! - [`take_escaped`][crate::ascii::take_escaped]: Recognize the input slice with escaped characters
 //! - [`escaped_transform`][crate::ascii::escaped_transform]: Parse escaped characters, unescaping them
+//!
+//! - [`expression()`]: Parse an operator precedence expression with Pratt parsing
 //!
 //! ### Character test functions
 //!
