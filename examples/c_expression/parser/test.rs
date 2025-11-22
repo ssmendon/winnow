@@ -3,8 +3,8 @@
 use winnow::error::ParseError;
 use winnow::Parser;
 
-use crate::parser::Expr;
 use crate::parser::pratt_parser;
+use crate::parser::Expr;
 
 #[allow(dead_code)]
 // to invoke fmt_delimited()

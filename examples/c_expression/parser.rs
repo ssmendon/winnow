@@ -1,8 +1,11 @@
-//! Main points of this example:
+//! Main points of the c_expression example:
 //!
 //! 1. [`Expr`], representing the AST of C-style expressions
 //! 2. [`pratt_parser()`], the core parser.
 //! 3. The [`test`]s, which demonstrate the expected input/outputs.
+//!
+//! There is one [`parse_example()`] function in this file, but the
+//! associated test module for this example shows the other inputs/outputs.
 //!
 //! # Errata:
 //! - There is a helper parser, [`identifier()`]
@@ -112,6 +115,28 @@ use winnow::token::{any, one_of, take, take_while};
 
 #[cfg(test)]
 mod test;
+
+#[test]
+fn parse_example() {
+    // Check out the [`crate::parser::test`] in this example for more samples.
+    let result = pratt_parser
+        .parse("a*a + b - c")
+        .map(|r| format!("{}", r))
+        .unwrap();
+
+    let expect = "\
+SUB
+  ADD
+    MUL
+      NAME a
+      NAME a
+    NAME b
+  NAME c
+
+(- (+ (* a a) b) c)";
+
+    assert_eq!(result, expect);
+}
 
 // Abstract syntax tree for an expression
 pub(crate) enum Expr {
@@ -504,27 +529,4 @@ impl core::fmt::Display for Expr {
         writeln!(f)?;
         self.fmt_delimited(f)
     }
-}
-
-#[test]
-fn parse_example() {
-    // Check out the [`crate::parser::test`] in this example for more samples.
-    let result =
-        pratt_parser
-            .parse("a*a + b - c")
-            .map(|r| format!("{}", r))
-            .unwrap();
-
-    let expect = "\
-SUB
-  ADD
-    MUL
-      NAME a
-      NAME a
-    NAME b
-  NAME c
-
-(- (+ (* a a) b) c)";
-
-    assert_eq!(result, expect);
 }
