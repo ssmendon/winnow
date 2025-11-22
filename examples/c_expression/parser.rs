@@ -4,11 +4,6 @@
 //! 2. [`pratt_parser()`], the core parser.
 //! 3. The [`test`]s, which demonstrate the expected input/outputs.
 //!
-//! # Errata:
-//! - There is a helper parser, [`identifier()`]
-//! - Two print implementations: [`Expr::fmt_ast_with_indent()`] and [`Expr::fmt_delimited()`]
-//! - For operator precedence, `1` has a low binding power while `13` has a high binding power.
-//!
 //! ## Printing
 //!
 //! `fmt_delimited()` is essentially prefix-notation.
@@ -170,11 +165,35 @@ pub(crate) enum Expr {
 
 /// Parser definition
 ///
-/// We define a helper function `parser()` and call it at the very end.
+/// It produce a parsed [`Expr`]
+///
+/// ```
+///     let result =
+///         pratt_parser
+///             .parse("a*a + b - c")
+///             .map(|r| format!("{}", r))
+///             .unwrap();
+///
+///     let expect = "\
+/// SUB
+///   ADD
+///     MUL
+///       NAME a
+///       NAME a
+///     NAME b
+///   NAME c
+///
+/// (- (+ (* a a) b) c)";
+///
+///     assert_eq!(result, expect);
+/// }
+/// ```
+/// We define a helper function `parser()` and call it as we need to parse sub-expressions.
 ///
 /// `parser()` accepts a minimum `precedence_level` for the entire expression,
 /// and it returns a [`Parser`] that takes in a string and returns an [`Expr`] on
 /// success.
+///
 pub(crate) fn pratt_parser(i: &mut &str) -> ModalResult<Expr> {
     fn parser<'i>(precedence: i64) -> impl Parser<&'i str, Expr, ErrMode<ContextError>> {
         move |i: &mut &str| {
@@ -504,27 +523,4 @@ impl core::fmt::Display for Expr {
         writeln!(f)?;
         self.fmt_delimited(f)
     }
-}
-
-#[test]
-fn parse_example() {
-    // Check out the [`crate::parser::test`] in this example for more samples.
-    let result =
-        pratt_parser
-            .parse("a*a + b - c")
-            .map(|r| format!("{}", r))
-            .unwrap();
-
-    let expect = "\
-SUB
-  ADD
-    MUL
-      NAME a
-      NAME a
-    NAME b
-  NAME c
-
-(- (+ (* a a) b) c)";
-
-    assert_eq!(result, expect);
 }
