@@ -1,4 +1,4 @@
-//! Main points of the c_expression example:
+//! Main points of the `c_expression` example:
 //!
 //! 1. [`Expr`], representing the AST of C-style expressions
 //! 2. [`pratt_parser()`], the core parser.
